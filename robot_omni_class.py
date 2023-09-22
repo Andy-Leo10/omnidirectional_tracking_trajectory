@@ -56,8 +56,19 @@ class RobotOmni:
     def get_position(self):
         return self.pose.position
 
+    #obtenemos la velocidad angular en el eje z
+    def get_angular_velocity(self):
+        return self.pose.angular.z
+
     def get_yaw(self):
-        return self.yaw
+        #return self.yaw
+        #se agrego lo de abajo
+        res = self.yaw
+        while res > pi:
+            res -= 2.0 * pi
+        while res < -pi:
+            res += 2.0 * pi
+        return res
 
     def get_orientation(self):
         res = self.yaw

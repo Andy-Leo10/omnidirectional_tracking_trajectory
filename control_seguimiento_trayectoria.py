@@ -1,12 +1,13 @@
 from robot_omni_class import *
 
-def seguimiento_de_trayectoria(xd,xdp,yd,ydp,x_c,y_c,phi):
+def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,x_c,y_c):
     # x_c: es x del centro entre ruedas
     # y_c: es y del centro entre ruedas
 
     d2 = 0.500 / 2
     K1 = 2
     K2 = 2
+    K3 = 2
 
     # xdes: es x desplazado
     # ydes: es y desplazado
@@ -19,11 +20,13 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,x_c,y_c,phi):
 
     xe = xd - xdesf
     ye = yd - ydesf
+    phie=0
 
     p1 = K1*xe - xdp
     p2 = K2*ye - ydp
+    p3 = K3*phie-phid
 
-    av = np.array([1, 1, 1])
+    av = np.array([xd+p1, yd+p1, phid+p3])
     av.shape = (3,1)
 
     # Matriz inversa:
@@ -58,6 +61,8 @@ if __name__ == '__main__':
         print(yaw)
         orientacion = robot.get_orientation()
         print(orientacion)
+        velocidad_angular = robot.get_angular_velocity()
+        print(velocidad_angular)
         robot.run()
     except rospy.ROSInterruptException:
         pass
