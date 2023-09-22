@@ -27,6 +27,7 @@ class RobotOmni:
         self.wheel_speed_publisher = rospy.Publisher('wheel_speed', Float32MultiArray, queue_size=10)
         self.odom_subscriber = rospy.Subscriber('odom', Odometry, self.odom_callback)
         self.pose = PoseStamped()
+        self.twist=Twist()
         self.yaw = 0.0
 
         rospy.sleep(1)
@@ -58,7 +59,7 @@ class RobotOmni:
 
     #obtenemos la velocidad angular en el eje z
     def get_angular_velocity(self):
-        return self.pose.angular.z
+        return self.twist.angular.z
 
     def get_yaw(self):
         #return self.yaw
@@ -95,6 +96,8 @@ if __name__ == '__main__':
         print(yaw)
         orientacion = robot.get_orientation()
         print(orientacion)
+        velocidad_angular = robot.get_angular_velocity()
+        print(velocidad_angular)
         robot.run()
     except rospy.ROSInterruptException:
         pass
