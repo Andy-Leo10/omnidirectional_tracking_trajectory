@@ -112,7 +112,13 @@ if __name__ == '__main__':
             xdp=0
             yd=v*tiempo
             ydp=v
-            robot.move(seguimiento_de_trayectoria2(xd,xdp,yd,ydp,0,0,robot))
+            phi=0
+            phid=0
+            robot.move(seguimiento_de_trayectoria2(xd,xdp,yd,ydp,phi,phid,robot))
             time.sleep(0.5)
     except rospy.ROSInterruptException:
         pass
+
+
+#roslaunch neo_description mpo_500_controller.launch
+#rosrun omni_pkg control_seguimiento_trayectoria.py
