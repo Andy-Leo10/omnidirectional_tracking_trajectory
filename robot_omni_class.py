@@ -57,6 +57,9 @@ class RobotOmni:
     def get_position(self):
         return self.pose.position
 
+    def get_linear_velocity(self):
+        return self.twist.linear
+
     #obtenemos la velocidad angular en el eje z
     def get_angular_velocity(self):
         return self.twist.angular.z
