@@ -29,6 +29,8 @@ class RobotOmni:
         self.pose = PoseStamped()
         self.twist=Twist()
         self.yaw = 0.0
+        self.maxVel = 2.0
+        self.maxAngVel = 1.5
 
         rospy.sleep(1)
 
@@ -39,6 +41,21 @@ class RobotOmni:
         return wheel_speeds.flatten().tolist()
 
     def move(self, vx, vy, wz):
+        #colocamos un saturador para que no se exceda la velocidad lineal
+        if vx>self.maxVel:
+            vx=self.maxVel
+        elif vx<-self.maxVel:
+            vx=-self.maxVel
+        if vy>self.maxVel:
+            vy=self.maxVel
+        elif vy<-self.maxVel:
+            vy=-self.maxVel
+        #colocamos un saturador para que no se exceda la velocidad angular
+        if wz>self.maxAngVel:
+            wz=self.maxAngVel
+        elif wz<-self.maxAngVel:
+            wz=-self.maxAngVel
+        #realizamos la publicacion de la velocidad lineal y angular SEGURA
         wheel_speeds = self.twist_to_wheels(wz, vx, vy)
         msg = Float32MultiArray(data=wheel_speeds)
         self.wheel_speed_publisher.publish(msg)
