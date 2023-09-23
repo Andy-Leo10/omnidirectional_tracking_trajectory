@@ -54,32 +54,50 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
     w = results[2, 0]
     return u,v,w
 
+def seguir_trayectoria(robot, trayectoria):
+    tiempo = 0.0
+    v = 0.5
+    dt = 0.005
+
+    for punto in trayectoria:
+        xd, xdp, yd, ydp, phi, phid = punto
+        while tiempo < 3.0:  # Controla el tiempo en cada segmento de la trayectoria
+            # Obtener velocidades para seguir el punto actual
+            u, v, w = seguimiento_de_trayectoria(xd, xdp, yd, ydp, phi, phid, robot)
+            print("Velocidades:", u, v, w)
+
+            # Mover el robot y actualizar el tiempo
+            robot.move(u, v, w)
+            tiempo += dt
+            time.sleep(dt)
+        tiempo=0
+        # Detener el robot al final de cada segmento
+        robot.stop()
+        print("---FIN DEL SEGMENTO---")
+
+    print("---FIN DE LA TRAYECTORIA---")
+
 if __name__ == '__main__':
     try:
         robot = RobotOmni()
-        #hacemos una trayectoria de linea recta en el tiempo de 10 segundos que se actualiza cada 0.5 segundos
-        tiempo=0.0
-        v=0.5
-        dt=0.005
-        while tiempo<3.0:
-            xd=v*tiempo
-            xdp=v
-            yd=v*tiempo
-            ydp=v
-            phi=0
-            phid=0
-            #obtenemos las velocidades respecto del robot para seguir la trayectoria
-            u,v,w=seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot)
-            print(u,v,w)
-            robot.move(u,v,w)
-            print(tiempo)
-            tiempo+=dt
-            time.sleep(dt)
-        robot.stop()
+        
+        # Definir los puntos de la trayectoria (forma poligonal)
+        trayectoria = [
+            (3.0, 0.0, 3.0, 0.0, 0.0, 0.0),  # Ejemplo: Avanzar 1 metro en linea recta
+            # (xd, xdp, yd, ydp, phi, phid)
+            # Define los puntos de la trayectoria aqui
+            (3.0, 0.0, -3.0, 0.0, 0.0, 0.0),
+            (-3.0, 0.0, -3.0, 0.0, 0.0, 0.0),
+            (-3.0, 0.0, 3.0, 0.0, 0.0, 0.0),
+            (3.0, 0.0, 3.0, 0.0, 0.0, 0.0)
+        ]
+
+        seguir_trayectoria(robot, trayectoria)
         print("---FIN---")
     except rospy.ROSInterruptException:
         pass
 
 
+
 #roslaunch neo_description mpo_500_controller.launch
-#rosrun omni_pkg control_seguimiento_trayectoria.py
+#python control_seguimiento_trayectoria.py
