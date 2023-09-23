@@ -1,5 +1,6 @@
 from robot_omni_class import *
 import time
+import math
 
 def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
     
@@ -54,32 +55,61 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
     w = results[2, 0]
     return u,v,w
 
+def seguir_trayectoria(robot, trayectoria):
+    tiempo = 0.0
+    v = 0.5
+    dt = 0.005
+
+    for punto in trayectoria:
+        xd, xdp, yd, ydp, phi, phid = punto
+        while tiempo < 1.0:  # Controla el tiempo en cada segmento de la trayectoria
+            # Obtener velocidades para seguir el punto actual
+            u, v, w = seguimiento_de_trayectoria(xd, xdp, yd, ydp, phi, phid, robot)
+            print("Velocidades:", u, v, w)
+
+            # Mover el robot y actualizar el tiempo
+            robot.move(u, v, w)
+            tiempo += dt
+            time.sleep(dt)
+        tiempo=0
+        # Detener el robot al final de cada segmento
+        robot.stop()
+        print("---FIN DEL SEGMENTO---")
+
+    print("---FIN DE LA TRAYECTORIA---")
+
+def generar_trayectoria_circular(radio, num_puntos):
+    trayectoria = []
+    angulo_entre_puntos = 2 * math.pi / num_puntos
+    
+    for i in range(num_puntos):
+        angulo = i * angulo_entre_puntos
+        x = radio * math.cos(angulo)
+        y = radio * math.sin(angulo)
+        xd = 0.0  # Velocidad en x (opcional)
+        yd = 0.0  # Velocidad en y (opcional)
+        phi = 0.0  # Orientacion (opcional)
+        phid = 0.0  # Velocidad angular (opcional)
+        
+        trayectoria.append((x, xd, y, yd, phi, phid))
+    
+    return trayectoria
+
 if __name__ == '__main__':
     try:
         robot = RobotOmni()
-        #hacemos una trayectoria de linea recta en el tiempo de 10 segundos que se actualiza cada 0.5 segundos
-        tiempo=0.0
-        v=0.5
-        dt=0.005
-        while tiempo<3.0:
-            xd=v*tiempo
-            xdp=v
-            yd=v*tiempo
-            ydp=v
-            phi=0
-            phid=0
-            #obtenemos las velocidades respecto del robot para seguir la trayectoria
-            u,v,w=seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot)
-            print(u,v,w)
-            robot.move(u,v,w)
-            print(tiempo)
-            tiempo+=dt
-            time.sleep(dt)
-        robot.stop()
+        
+        radio = 4.0  # Radio de la trayectoria circular
+        num_puntos = 36  # Numero de puntos en la trayectoria circular
+        # Definir los puntos de la trayectoria 
+        trayectoria = generar_trayectoria_circular(radio, num_puntos)
+        # (xd, xdp, yd, ydp, phi, phid)
+        seguir_trayectoria(robot, trayectoria)
         print("---FIN---")
     except rospy.ROSInterruptException:
         pass
 
 
+
 #roslaunch neo_description mpo_500_controller.launch
-#rosrun omni_pkg control_seguimiento_trayectoria.py
+#python control_seguimiento_trayectoria.py
