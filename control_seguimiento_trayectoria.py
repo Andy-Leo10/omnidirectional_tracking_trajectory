@@ -6,6 +6,7 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
     position=robot.get_position()
     x_c=position.x
     y_c=position.y
+    phidesf=robot.get_yaw()
     
     # x_c: es x del centro entre ruedas
     # y_c: es y del centro entre ruedas
@@ -26,13 +27,13 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
 
     xe = xd - xdesf
     ye = yd - ydesf
-    phie=0
+    phie=phid-phidesf
 
     p1 = K1*xe - xdp
     p2 = K2*ye - ydp
     p3 = K3*phie-phid
 
-    av = np.array([xd+p1, yd+p1, phid+p3])
+    av = np.array([xd+p1, yd+p2, phid+p3])
     av.shape = (3,1)
 
     # Matriz inversa:
@@ -61,17 +62,18 @@ if __name__ == '__main__':
         v=0.5
         dt=0.005
         while tiempo<3.0:
-            tiempo+=dt
-            xd=0
-            xdp=0
+            xd=v*tiempo
+            xdp=v
             yd=v*tiempo
             ydp=v
             phi=0
             phid=0
             #obtenemos las velocidades respecto del robot para seguir la trayectoria
             u,v,w=seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot)
+            print(u,v,w)
             robot.move(u,v,w)
             print(tiempo)
+            tiempo+=dt
             time.sleep(dt)
         robot.stop()
         print("---FIN---")

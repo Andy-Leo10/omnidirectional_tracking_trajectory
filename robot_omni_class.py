@@ -107,17 +107,16 @@ if __name__ == '__main__':
     try:
         robot = RobotOmni()
         # Example usage:
-        robot.move(vx=1, vy=0, wz=1.5)  # Move the robot
-        rospy.sleep(2)
+        robot.move(vx=0, vy=0, wz=1.5)  # Move the robot
+        rospy.sleep(1)
         robot.stop()  # Stop the robot
         position = robot.get_position()
         print(position)
         yaw = robot.get_yaw()
         print(yaw)
-        orientacion = robot.get_orientation()
-        print(orientacion)
         velocidad_angular = robot.get_angular_velocity()
         print(velocidad_angular)
+        robot.stop()
         robot.run()
     except rospy.ROSInterruptException:
         pass
