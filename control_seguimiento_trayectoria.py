@@ -114,7 +114,9 @@ if __name__ == '__main__':
             ydp=v
             phi=0
             phid=0
-            robot.move(seguimiento_de_trayectoria2(xd,xdp,yd,ydp,phi,phid,robot))
+            #obtenemos las velocidades respecto del robot para seguir la trayectoria
+            u,v,w=seguimiento_de_trayectoria2(xd,xdp,yd,ydp,phi,phid,robot)
+            robot.move(u,v,w)
             time.sleep(0.5)
     except rospy.ROSInterruptException:
         pass
