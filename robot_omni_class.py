@@ -57,6 +57,7 @@ class RobotOmni:
             wz=-self.maxAngVel
         #realizamos la publicacion de la velocidad lineal y angular SEGURA
         wheel_speeds = self.twist_to_wheels(wz, vx, vy)
+        print(vx,vy,wz)
         msg = Float32MultiArray(data=wheel_speeds)
         self.wheel_speed_publisher.publish(msg)
 

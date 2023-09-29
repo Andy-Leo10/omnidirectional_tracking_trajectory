@@ -33,7 +33,7 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phid,phidp,robot):
     p2 = K2*ye - ydp
     p3 = K3*phie-phidp
 
-    av = np.array([xd+p1, yd+p2, phid+p3])
+    av = np.array([p1, p2, p3])
     av.shape = (3,1)
 
     # Matriz inversa:
@@ -62,15 +62,14 @@ if __name__ == '__main__':
         v=0.5
         dt=0.005
         while tiempo<3.0:
-            xd=v*tiempo
-            xdp=v
-            yd=v*tiempo
-            ydp=v
+            xd=-2
+            xdp=0
+            yd=-3
+            ydp=0
             phi=0
             phid=0
             #obtenemos las velocidades respecto del robot para seguir la trayectoria
             u,v,w=seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot)
-            print(u,v,w)
             robot.move(u,v,w)
             print(tiempo)
             tiempo+=dt
@@ -82,4 +81,4 @@ if __name__ == '__main__':
 
 
 #roslaunch neo_description mpo_500_controller.launch
-#rosrun omni_pkg control_seguimiento_trayectoria.py
+#python control_seguimiento_trayectoria.py
