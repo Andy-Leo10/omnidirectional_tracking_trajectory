@@ -1,7 +1,7 @@
 from robot_omni_class import *
 import time
 
-def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
+def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phid,phidp,robot):
     
     position=robot.get_position()
     x_c=position.x
@@ -31,7 +31,7 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
 
     p1 = K1*xe - xdp
     p2 = K2*ye - ydp
-    p3 = K3*phie-phid
+    p3 = K3*phie-phidp
 
     av = np.array([xd+p1, yd+p2, phid+p3])
     av.shape = (3,1)
@@ -57,7 +57,7 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
 if __name__ == '__main__':
     try:
         robot = RobotOmni()
-        #hacemos una trayectoria de linea recta en el tiempo de 10 segundos que se actualiza cada 0.5 segundos
+        #hacemos una trayectoria que se actualiza cada 0.5 segundos
         tiempo=0.0
         v=0.5
         dt=0.005
