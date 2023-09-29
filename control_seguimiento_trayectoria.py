@@ -61,7 +61,7 @@ if __name__ == '__main__':
         tiempo=0.0
         v=0.5
         dt=0.005
-        while tiempo<2.0:
+        while tiempo<3.0:
             xd=-2
             xdp=0
             yd=2
@@ -75,7 +75,8 @@ if __name__ == '__main__':
             tiempo+=dt
             time.sleep(dt)
         robot.stop()
-        while tiempo<4.0:
+        tiempo=0
+        while tiempo<3.0:
             xd=1
             xdp=0
             yd=-3
@@ -95,4 +96,5 @@ if __name__ == '__main__':
 
 
 #roslaunch neo_description mpo_500_controller.launch
+#cd ~/catkin_ws/src/omni_pkg/src
 #python control_seguimiento_trayectoria.py
