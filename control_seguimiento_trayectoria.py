@@ -7,7 +7,7 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phid,phidp,robot):
     x_c=position.x
     y_c=position.y
     phidesf=robot.get_yaw()
-    
+    phi=phidesf
     # x_c: es x del centro entre ruedas
     # y_c: es y del centro entre ruedas
 
