@@ -62,11 +62,11 @@ if __name__ == '__main__':
         v=0.5
         dt=0.005
         while tiempo<2.0:
-            xd=1
+            xd=-2
             xdp=0
-            yd=-1
+            yd=2
             ydp=0
-            phi=-1*pi/3
+            phi=0
             phid=0
             #obtenemos las velocidades respecto del robot para seguir la trayectoria
             u,v,w=seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot)
@@ -75,10 +75,10 @@ if __name__ == '__main__':
             tiempo+=dt
             time.sleep(dt)
         robot.stop()
-        while tiempo<6.0:
+        while tiempo<4.0:
             xd=1
             xdp=0
-            yd=-1
+            yd=-3
             ydp=0
             phi=0
             phid=0
