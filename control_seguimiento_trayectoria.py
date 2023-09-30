@@ -42,7 +42,7 @@ def seguimiento_de_trayectoria(xd, xdp, yd, ydp, phid, phidp, robot):
 
     M = np.array([
         [np.cos(phidesf), -np.sin(phidesf), -d2 * np.sin(phidesf)],
-        [-np.sin(phidesf), np.cos(phidesf), d2 * np.cos(phidesf)],
+        [np.sin(phidesf), np.cos(phidesf), d2 * np.cos(phidesf)],
         [0, 0, 1]
     ])
 
