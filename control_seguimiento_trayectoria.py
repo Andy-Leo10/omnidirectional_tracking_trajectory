@@ -1,13 +1,12 @@
 from robot_omni_class import *
 import time
 
-def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
-    
-    position=robot.get_position()
-    x_c=position.x
-    y_c=position.y
-    phidesf=robot.get_yaw()
-    
+def seguimiento_de_trayectoria(xd, xdp, yd, ydp, phid, phidp, robot):
+    position = robot.get_position()
+    x_c = position.x
+    y_c = position.y
+    phidesf = robot.get_yaw()
+
     # x_c: es x del centro entre ruedas
     # y_c: es y del centro entre ruedas
 
@@ -16,43 +15,43 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
     K2 = 2
     K3 = 2
 
-    # xdes: es x desplazado
-    # ydes: es y desplazado
+    # xdesf: es x desplazado
+    # ydesf: es y desplazado
 
-    xdesf = x_c + d2*np.cos(phi)
-    ydesf = y_c + d2*np.sin(phi)
+    xdesf = x_c + d2 * np.cos(phidesf)
+    ydesf = y_c + d2 * np.sin(phidesf)
 
     # xd: es x deseado
     # yd: es y deseado
 
     xe = xd - xdesf
     ye = yd - ydesf
-    phie=phid-phidesf
+    phie = phid - phidesf
 
-    p1 = K1*xe - xdp
-    p2 = K2*ye - ydp
-    p3 = K3*phie-phid
+    p1 = K1 * xe - xdp
+    p2 = K2 * ye - ydp
+    p3 = K3 * phie - phidp
 
-    av = np.array([xd+p1, yd+p2, phid+p3])
-    av.shape = (3,1)
+    av = np.array([p1, p2, p3])
+    av.shape = (3, 1)
 
     # Matriz inversa:
     # [cos(phi)     sin(phi)    0
     #  -sin(phi)    cos(phi)    -d2
     #  0            0           1]
 
-    M= np.array([
-                [np.cos(phi), -np.sin(phi), -d2*np.sin(phi)],
-                [-np.sin(phi), np.cos(phi), d2*np.cos(phi)],
-                [0,             0,              1]
-                ])
+    M = np.array([
+        [np.cos(phidesf), -np.sin(phidesf), -d2 * np.sin(phidesf)],
+        [np.sin(phidesf), np.cos(phidesf), d2 * np.cos(phidesf)],
+        [0, 0, 1]
+    ])
 
-    results=np.dot(np.linalg.inv(M),av)
-    
+    results = np.dot(np.linalg.inv(M), av)
+
     u = results[0, 0]
     v = results[1, 0]
     w = results[2, 0]
-    return u,v,w
+    return u, v, w
 
 def seguir_trayectoria(robot, trayectoria):
     tiempo = 0.0
@@ -60,12 +59,11 @@ def seguir_trayectoria(robot, trayectoria):
     dt = 0.005
 
     for punto in trayectoria:
-        xd, xdp, yd, ydp, phi, phid = punto
-        while tiempo < 3.0:  # Controla el tiempo en cada segmento de la trayectoria
+        xd, xdp, yd, ydp, phi, phid, duracion = punto
+        while tiempo < duracion:  # Controla el tiempo en cada segmento de la trayectoria
             # Obtener velocidades para seguir el punto actual
             u, v, w = seguimiento_de_trayectoria(xd, xdp, yd, ydp, phi, phid, robot)
-            print("Velocidades:", u, v, w)
-
+            print("Velocidades:", round(u,2), round(v,2), round(w,2))
             # Mover el robot y actualizar el tiempo
             robot.move(u, v, w)
             tiempo += dt
@@ -83,13 +81,13 @@ if __name__ == '__main__':
         
         # Definir los puntos de la trayectoria (forma poligonal)
         trayectoria = [
-            (3.0, 0.0, 3.0, 0.0, 0.0, 0.0),  # Ejemplo: Avanzar 1 metro en linea recta
-            # (xd, xdp, yd, ydp, phi, phid)
+            #(1.0, 0.0, 1.0, 0.0, 0.0, 0.0),  # Ejemplo: Avanzar 1 metro en diagonal
+            # (xd, xdp, yd, ydp, phi, phid,t)
             # Define los puntos de la trayectoria aqui
-            (3.0, 0.0, -3.0, 0.0, 0.0, 0.0),
-            (-3.0, 0.0, -3.0, 0.0, 0.0, 0.0),
-            (-3.0, 0.0, 3.0, 0.0, 0.0, 0.0),
-            (3.0, 0.0, 3.0, 0.0, 0.0, 0.0)
+            (0.0, 0.0, 7.0, 0.0, pi/2, 0.0,6),
+            (5.0, 0.0, 7.0, 0.0, 0, 0.0,4),
+            (5.0, 0.0, 11.0, 0.0, pi/2, 0.0,3),
+            (10.3, 0.0, 11.3, 0.0, 0, 0.0,5)
         ]
 
         seguir_trayectoria(robot, trayectoria)
@@ -98,6 +96,7 @@ if __name__ == '__main__':
         pass
 
 
-
+#cd /home/user/catkin_ws/src/omni_pkg/src
 #roslaunch neo_description mpo_500_controller.launch
 #python control_seguimiento_trayectoria.py
+#roslaunch neo_description mpo_500_controller.launch world_name_global:=/home/user/catkin_ws/src/omni_pkg/src/miDepaWorld.world

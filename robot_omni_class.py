@@ -29,8 +29,8 @@ class RobotOmni:
         self.pose = PoseStamped()
         self.twist=Twist()
         self.yaw = 0.0
-        self.maxVel = 2.0
-        self.maxAngVel = 1.5
+        self.maxVel = 1.0
+        self.maxAngVel = 1.0
 
         rospy.sleep(1)
 
