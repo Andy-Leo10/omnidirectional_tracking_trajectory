@@ -2,7 +2,7 @@
 
 Author: Andrés Alamo 
 
-Date: September 2023
+Date: October 2023
 
 ## Descripción
 
@@ -21,4 +21,6 @@ roslaunch neo_description mpo_500_controller.launch world_name_global:=/home/use
 
 cd /home/user/catkin_ws/src/omni_pkg/src
 python control_seguimiento_trayectoria.py
-``` 
+```
+
+![goEscaleras(1)](https://github.com/Andy-Leo10/omnidirectional_tracking_trajectory/assets/60716487/8ba6ddb6-1080-4c10-9c90-7f63370ea45d)
