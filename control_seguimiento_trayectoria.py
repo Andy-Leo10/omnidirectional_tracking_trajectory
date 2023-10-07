@@ -74,7 +74,7 @@ def seguir_trayectoria(robot, trayectoria):
 
     print("---FIN DE LA TRAYECTORIA---")
 
-def generar_trayectoria_circular(radio, num_puntos):
+def generar_trayectoria_circular(radio, num_puntos,tiempo_por_punto):
     trayectoria = []
     angulo_entre_puntos = 2 * math.pi / num_puntos
     
@@ -84,10 +84,11 @@ def generar_trayectoria_circular(radio, num_puntos):
         y = radio * math.sin(angulo)
         xd = 0.0  # Velocidad en x (opcional)
         yd = 0.0  # Velocidad en y (opcional)
-        phi = 0.0  # Orientacion (opcional)
+        #orientacion tangente a la trayectoria
+        phi = angulo + math.pi / 2
         phid = 0.0  # Velocidad angular (opcional)
         
-        trayectoria.append((x, xd, y, yd, phi, phid))
+        trayectoria.append((x, xd, y, yd, phi, phid,tiempo_por_punto))
     
     return trayectoria
 
@@ -97,8 +98,9 @@ if __name__ == '__main__':
         
         radio = 4.0  # Radio de la trayectoria circular
         num_puntos = 36  # Numero de puntos en la trayectoria circular
+        tiempo_total= 10  # Tiempo (segundos)
         # Definir los puntos de la trayectoria 
-        trayectoria = generar_trayectoria_circular(radio, num_puntos)
+        trayectoria = generar_trayectoria_circular(radio, num_puntos,tiempo_total/num_puntos)
         # (xd, xdp, yd, ydp, phi, phid, t)
         seguir_trayectoria(robot, trayectoria)
     except rospy.ROSInterruptException:

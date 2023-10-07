@@ -29,8 +29,8 @@ class RobotOmni:
         self.pose = PoseStamped()
         self.twist=Twist()
         self.yaw = 0.0
-        self.maxVel = 2.0
-        self.maxAngVel = 1.5
+        self.maxVel = 1.0
+        self.maxAngVel = 1.0
 
         rospy.sleep(1)
 
@@ -57,6 +57,7 @@ class RobotOmni:
             wz=-self.maxAngVel
         #realizamos la publicacion de la velocidad lineal y angular SEGURA
         wheel_speeds = self.twist_to_wheels(wz, vx, vy)
+        print("Velocidades:", round(vx, 3), round(vy, 3), round(wz, 3))
         msg = Float32MultiArray(data=wheel_speeds)
         self.wheel_speed_publisher.publish(msg)
 
