@@ -2,13 +2,12 @@ from robot_omni_class import *
 import time
 import math
 
-def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
-    
-    position=robot.get_position()
-    x_c=position.x
-    y_c=position.y
-    phidesf=robot.get_yaw()
-    
+def seguimiento_de_trayectoria(xd, xdp, yd, ydp, phid, phidp, robot):
+    position = robot.get_position()
+    x_c = position.x
+    y_c = position.y
+    phidesf = robot.get_yaw()
+
     # x_c: es x del centro entre ruedas
     # y_c: es y del centro entre ruedas
 
@@ -17,56 +16,53 @@ def seguimiento_de_trayectoria(xd,xdp,yd,ydp,phi,phid,robot):
     K2 = 2
     K3 = 2
 
-    # xdes: es x desplazado
-    # ydes: es y desplazado
+    # xdesf: es x desplazado
+    # ydesf: es y desplazado
 
-    xdesf = x_c + d2*np.cos(phi)
-    ydesf = y_c + d2*np.sin(phi)
+    xdesf = x_c + d2 * np.cos(phidesf)
+    ydesf = y_c + d2 * np.sin(phidesf)
 
     # xd: es x deseado
     # yd: es y deseado
 
     xe = xd - xdesf
     ye = yd - ydesf
-    phie=phid-phidesf
+    phie = phid - phidesf
 
-    p1 = K1*xe - xdp
-    p2 = K2*ye - ydp
-    p3 = K3*phie-phid
+    p1 = K1 * xe + xdp
+    p2 = K2 * ye + ydp
+    p3 = K3 * phie + phidp
 
-    av = np.array([xd+p1, yd+p2, phid+p3])
-    av.shape = (3,1)
+    av = np.array([p1, p2, p3])
+    av.shape = (3, 1)
 
     # Matriz inversa:
     # [cos(phi)     sin(phi)    0
     #  -sin(phi)    cos(phi)    -d2
     #  0            0           1]
 
-    M= np.array([
-                [np.cos(phi), -np.sin(phi), -d2*np.sin(phi)],
-                [-np.sin(phi), np.cos(phi), d2*np.cos(phi)],
-                [0,             0,              1]
-                ])
+    M = np.array([
+        [np.cos(phidesf), -np.sin(phidesf), -d2 * np.sin(phidesf)],
+        [np.sin(phidesf), np.cos(phidesf), d2 * np.cos(phidesf)],
+        [0, 0, 1]
+    ])
 
-    results=np.dot(np.linalg.inv(M),av)
-    
+    results = np.dot(np.linalg.inv(M), av)
+
     u = results[0, 0]
     v = results[1, 0]
     w = results[2, 0]
-    return u,v,w
+    return u, v, w
 
 def seguir_trayectoria(robot, trayectoria):
     tiempo = 0.0
-    v = 0.5
     dt = 0.005
 
     for punto in trayectoria:
-        xd, xdp, yd, ydp, phi, phid = punto
-        while tiempo < 1.0:  # Controla el tiempo en cada segmento de la trayectoria
+        xd, xdp, yd, ydp, phi, phid, duracion = punto
+        while tiempo < duracion:  # Controla el tiempo en cada segmento de la trayectoria
             # Obtener velocidades para seguir el punto actual
             u, v, w = seguimiento_de_trayectoria(xd, xdp, yd, ydp, phi, phid, robot)
-            print("Velocidades:", u, v, w)
-
             # Mover el robot y actualizar el tiempo
             robot.move(u, v, w)
             tiempo += dt
@@ -103,13 +99,14 @@ if __name__ == '__main__':
         num_puntos = 36  # Numero de puntos en la trayectoria circular
         # Definir los puntos de la trayectoria 
         trayectoria = generar_trayectoria_circular(radio, num_puntos)
-        # (xd, xdp, yd, ydp, phi, phid)
+        # (xd, xdp, yd, ydp, phi, phid, t)
         seguir_trayectoria(robot, trayectoria)
-        print("---FIN---")
     except rospy.ROSInterruptException:
         pass
 
 
 
+#cd /home/user/catkin_ws/src/omni_pkg/src
 #roslaunch neo_description mpo_500_controller.launch
 #python control_seguimiento_trayectoria.py
+#roslaunch neo_description mpo_500_controller.launch world_name_global:=/home/user/catkin_ws/src/omni_pkg/src/miDepaWorld.world
