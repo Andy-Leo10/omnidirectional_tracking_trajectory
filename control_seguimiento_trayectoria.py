@@ -86,6 +86,9 @@ def generar_trayectoria_circular(radio, num_puntos,tiempo_por_punto):
         yd = 0.0  # Velocidad en y (opcional)
         #orientacion tangente a la trayectoria
         phi = math.atan2(radio * math.cos(angulo), -radio * math.sin(angulo))
+        #pasamos el angulo a 0-2pi
+        if phi<0:
+            phi=2*math.pi+phi
         phid = 0.0  # Velocidad angular (opcional)
         
         trayectoria.append((x, xd, y, yd, phi, phid,tiempo_por_punto))
