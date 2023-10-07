@@ -85,7 +85,7 @@ def generar_trayectoria_circular(radio, num_puntos,tiempo_por_punto):
         xd = 0.0  # Velocidad en x (opcional)
         yd = 0.0  # Velocidad en y (opcional)
         #orientacion tangente a la trayectoria
-        phi = math.atan2(radio * math.cos(angulo), -radio * math.sin(angulo))
+        phi = math.atan2(math.cos(angulo), -math.sin(angulo))
         phid = 0.0  # Velocidad angular (opcional)
         
         trayectoria.append((x, xd, y, yd, phi, phid,tiempo_por_punto))
@@ -96,10 +96,13 @@ if __name__ == '__main__':
     try:
         robot = RobotOmni()
         
-        radio = 2.0  # Radio de la trayectoria circular
+        radio = 1.6  # Radio de la trayectoria circular
         num_puntos = 36  # Numero de puntos en la trayectoria circular
-        tiempo_total= 15.0  # Tiempo (segundos)
+        tiempo_total= 12.0  # Tiempo (segundos)
         # Definir los puntos de la trayectoria 
+        tray= []
+        tray.append((0.3, 0, 0.3, 0, 0.2, 0, 1.5))
+        seguir_trayectoria(robot, tray)
         trayectoria = generar_trayectoria_circular(radio, num_puntos,tiempo_total/num_puntos)
         # (xd, xdp, yd, ydp, phi, phid, t)
         seguir_trayectoria(robot, trayectoria)
@@ -111,4 +114,4 @@ if __name__ == '__main__':
 #cd /home/user/catkin_ws/src/omni_pkg/src
 #roslaunch neo_description mpo_500_controller.launch
 #python control_seguimiento_trayectoria.py
-#roslaunch neo_description mpo_500_controller.launch world_name_global:=/home/user/catkin_ws/src/omni_pkg/src/miDepaWorld.world
+#roslaunch neo_description mpo_500_controller.launch world_name_global:=/home/user/catkin_ws/src/omni_pkg/src/miDepaWorld.world x:=2.5 y:=10.5
