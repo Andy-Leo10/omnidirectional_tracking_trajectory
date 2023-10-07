@@ -85,7 +85,7 @@ def generar_trayectoria_circular(radio, num_puntos,tiempo_por_punto):
         xd = 0.0  # Velocidad en x (opcional)
         yd = 0.0  # Velocidad en y (opcional)
         #orientacion tangente a la trayectoria
-        phi = angulo + math.pi / 2
+        phi = math.atan2(radio * math.cos(angulo), -radio * math.sin(angulo))
         phid = 0.0  # Velocidad angular (opcional)
         
         trayectoria.append((x, xd, y, yd, phi, phid,tiempo_por_punto))
@@ -96,9 +96,9 @@ if __name__ == '__main__':
     try:
         robot = RobotOmni()
         
-        radio = 4.0  # Radio de la trayectoria circular
+        radio = 2.0  # Radio de la trayectoria circular
         num_puntos = 36  # Numero de puntos en la trayectoria circular
-        tiempo_total= 10  # Tiempo (segundos)
+        tiempo_total= 15.0  # Tiempo (segundos)
         # Definir los puntos de la trayectoria 
         trayectoria = generar_trayectoria_circular(radio, num_puntos,tiempo_total/num_puntos)
         # (xd, xdp, yd, ydp, phi, phid, t)
