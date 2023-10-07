@@ -89,6 +89,10 @@ def generar_trayectoria_circular(radio, num_puntos,tiempo_por_punto):
         #pasamos el angulo a 0-2pi
         if phi<0:
             phi=2*math.pi+phi
+        elif phi>2*math.pi:
+            phi=phi-2*math.pi
+        elif phi==2*math.pi:
+            phi=0
         phid = 0.0  # Velocidad angular (opcional)
         
         trayectoria.append((x, xd, y, yd, phi, phid,tiempo_por_punto))
